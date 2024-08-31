@@ -27,6 +27,7 @@ jobs:
           terraform init
           terraform apply -auto-approve
           echo "PUBLIC_IP=$(terraform output -raw public_ip)" >> $GITHUB_OUTPUT
+          echo "KEY_NAME=$(terraform output -raw key_name)" >> $GITHUB_OUTPUT
 
       - name: Setup Ansible
         run: |
@@ -40,9 +41,9 @@ jobs:
               django_server:
                 ansible_host: ${{ steps.terraform.outputs.PUBLIC_IP }}
                 ansible_user: ec2-user
-                ansible_ssh_private_key_file: ./terraform/deployer-key.pem" > ansible/inventory.yml
+                ansible_ssh_private_key_file: ./terraform/${{ steps.terraform.outputs.KEY_NAME }}.pem" > ansible/inventory.yml
 
       - name: Run Ansible playbook
         run: |
-          chmod 600 terraform/deployer-key.pem
+          chmod 600 terraform/${{ steps.terraform.outputs.KEY_NAME }}.pem
           ansible-playbook -i ansible/inventory.yml ansible/playbook.yml

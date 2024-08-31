@@ -14,9 +14,17 @@ resource "aws_instance" "django_server" {
   vpc_security_group_ids = [aws_security_group.django_sg.id]
 }
 
+resource "random_id" "sg_suffix" {
+  byte_length = 4
+}
+
 resource "aws_security_group" "django_sg" {
-  name        = "django-sg"
+  name        = "django-sg-${random_id.sg_suffix.hex}"
   description = "Security group for Django server"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 
   ingress {
     from_port   = 22
@@ -40,8 +48,12 @@ resource "aws_security_group" "django_sg" {
   }
 }
 
+resource "random_id" "key_suffix" {
+  byte_length = 4
+}
+
 resource "aws_key_pair" "deployer" {
-  key_name   = "deployer-key"
+  key_name   = "deployer-key-${random_id.key_suffix.hex}"
   public_key = tls_private_key.pk.public_key_openssh
 }
 
@@ -52,5 +64,5 @@ resource "tls_private_key" "pk" {
 
 resource "local_file" "private_key" {
   content  = tls_private_key.pk.private_key_pem
-  filename = "${path.module}/deployer-key.pem"
+  filename = "${path.module}/deployer-key-${random_id.key_suffix.hex}.pem"
 }
