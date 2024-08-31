@@ -1,10 +1,10 @@
 provider "aws" {
-  region = "us-east-1"
+  region = var.aws_region
 }
 
 resource "aws_instance" "django_server" {
-  ami           = "ami-0c55b159cbfafe1f0"  # Amazon Linux 2 AMI (adjust as needed)
-  instance_type = "t2.micro"
+  ami           = var.ami_id
+  instance_type = var.instance_type
   key_name      = aws_key_pair.deployer.key_name  # Reference the key_name from aws_key_pair resource
 
   tags = {
@@ -53,8 +53,4 @@ resource "tls_private_key" "pk" {
 resource "local_file" "private_key" {
   content  = tls_private_key.pk.private_key_pem
   filename = "${path.module}/deployer-key.pem"
-}
-
-output "public_ip" {
-  value = aws_instance.django_server.public_ip
 }
