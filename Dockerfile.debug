@@ -1,0 +1,30 @@
+# Use an official Python runtime as a parent image
+FROM python:3.12
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Set work directory
+WORKDIR /app
+
+# Install pipenv
+RUN pip install --upgrade pip && pip install pipenv
+
+# Copy Pipfile and Pipfile.lock
+COPY Pipfile Pipfile.lock /app/
+
+# Install dependencies using pipenv
+RUN pipenv install --system --deploy --ignore-pipfile
+
+# Install debugpy
+RUN pipenv run pip install debugpy
+
+# Copy project
+COPY . /app/
+
+# Expose port 8000 for the Django app and 5678 for debugpy
+EXPOSE 8000 5678
+
+# Run the command to start uWSGI
+CMD ["pipenv", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]

@@ -1,0 +1,54 @@
+---
+- name: Deploy Django application
+  hosts: django_server
+  become: yes
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Install Docker
+      package:
+        name: docker
+        state: present
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Create a directory for the Django app
+      file:
+        path: /opt/django_app
+        state: directory
+        mode: '0755'
+
+    - name: Copy Django project files to the server
+      copy:
+        src: ../
+        dest: /opt/django_app
+        exclude:
+          - "*.pyc"
+          - "__pycache__"
+          - "venv"
+          - ".git"
+
+    - name: Build Docker image
+      docker_image:
+        name: django_app
+        build:
+          path: /opt/django_app
+        source: build
+        force_source: yes
+
+    - name: Run Django Docker container
+      docker_container:
+        name: django_app
+        image: django_app:latest
+        state: started
+        restart_policy: always
+        published_ports:
+          - "80:8000"

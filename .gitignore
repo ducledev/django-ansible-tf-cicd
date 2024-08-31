@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# SQLite
+*.sqlite
+*.sqlite3
+*.db
+
+# Virtual Environment
+venv/
+.venv/
+env/
+.env
+
+# IDE-specific files
+.vscode/
+.idea/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Django static and media files (in development)
+/static/
+/media/
+
+# Secret key
+*.secret
+
+# Compiled Python files
+*.pyc
+
+# Backup files
+*.bak
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
