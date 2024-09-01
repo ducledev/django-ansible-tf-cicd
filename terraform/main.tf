@@ -2,14 +2,10 @@ provider "aws" {
   region = var.aws_region
 }
 
-resource "random_id" "server_id" {
-  byte_length = 8
-}
-
 data "aws_instances" "existing_django_server" {
   filter {
     name   = "tag:Project"
-    values = ["DjangoProjectXYZ"]  // Replace with your specific project name
+    values = [var.project_name]
   }
 
   filter {
@@ -30,11 +26,14 @@ resource "aws_instance" "django_server" {
   }
 
   vpc_security_group_ids = [aws_security_group.django_sg.id]
+  subnet_id                   = aws_subnet.django_demo_public_subnet.id
+  associate_public_ip_address = true
 }
 
 resource "aws_security_group" "django_sg" {
   name        = "django-sg-${var.project_name}"
   description = "Security group for Django server"
+  vpc_id = aws_vpc.django_demo_vpc.id
 
   ingress {
     from_port   = 22
@@ -75,4 +74,52 @@ resource "tls_private_key" "pk" {
 resource "local_file" "private_key" {
   content  = tls_private_key.pk.private_key_pem
   filename = "${path.module}/deployer-key-${random_id.key_suffix.hex}.pem"
+}
+
+// Updated VPC configuration
+resource "aws_vpc" "django_demo_vpc" {
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+
+  tags = {
+    Name = "django-demo-vpc"
+  }
+}
+
+resource "aws_internet_gateway" "django_demo" {
+  vpc_id = aws_vpc.django_demo_vpc.id
+
+  tags = {
+    Name = "django-demo-igw"
+  }
+}
+
+resource "aws_subnet" "django_demo_public_subnet" {
+  vpc_id                  = aws_vpc.django_demo_vpc.id
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = "${var.aws_region}a"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "django-demo-public-subnet"
+  }
+}
+
+resource "aws_route_table" "django_demo_public_rt" {
+  vpc_id = aws_vpc.django_demo_vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.django_demo.id
+  }
+
+  tags = {
+    Name = "django-demo-public-rt"
+  }
+}
+
+resource "aws_route_table_association" "django_demo_public_rta" {
+  subnet_id      = aws_subnet.django_demo_public_subnet.id
+  route_table_id = aws_route_table.django_demo_public_rt.id
 }
