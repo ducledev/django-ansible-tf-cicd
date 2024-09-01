@@ -17,3 +17,8 @@ variable "key_name" {
   description = "The name of the key pair to use for the EC2 instance"
   default     = "your-key-pair-name"
 }
+
+variable "project_name" {
+  type        = string
+  description = "django-ansible-tf-demo"
+}

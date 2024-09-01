@@ -2,29 +2,39 @@ provider "aws" {
   region = var.aws_region
 }
 
+resource "random_id" "server_id" {
+  byte_length = 8
+}
+
+data "aws_instances" "existing_django_server" {
+  filter {
+    name   = "tag:Project"
+    values = ["DjangoProjectXYZ"]  // Replace with your specific project name
+  }
+
+  filter {
+    name   = "instance-state-name"
+    values = ["running", "stopped"]
+  }
+}
+
 resource "aws_instance" "django_server" {
+  count         = length(data.aws_instances.existing_django_server.ids) == 0 ? 1 : 0
   ami           = var.ami_id
   instance_type = var.instance_type
-  key_name      = aws_key_pair.deployer.key_name  # Reference the key_name from aws_key_pair resource
+  key_name      = aws_key_pair.deployer.key_name
 
   tags = {
-    Name = "Django-Server"
+    Name    = "Django-Server-${var.project_name}"
+    Project = var.project_name
   }
 
   vpc_security_group_ids = [aws_security_group.django_sg.id]
 }
 
-resource "random_id" "sg_suffix" {
-  byte_length = 4
-}
-
 resource "aws_security_group" "django_sg" {
-  name        = "django-sg-${random_id.sg_suffix.hex}"
+  name        = "django-sg-${var.project_name}"
   description = "Security group for Django server"
-
-  lifecycle {
-    create_before_destroy = true
-  }
 
   ingress {
     from_port   = 22
