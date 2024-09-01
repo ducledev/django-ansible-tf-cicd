@@ -26,8 +26,9 @@ jobs:
           cd terraform
           terraform init
           terraform apply -auto-approve
-          echo "PUBLIC_IP=$(terraform output public_ip)" >> $GITHUB_ENV
+          echo "PUBLIC_IP=$(terraform output -raw public_ip)" >> $GITHUB_ENV
           echo "KEY_NAME=$(terraform output -raw key_name)" >> $GITHUB_ENV
+          echo $GITHUB_ENV
 
       - name: Setup Ansible
         run: |
