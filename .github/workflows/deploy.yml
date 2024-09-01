@@ -26,17 +26,28 @@ jobs:
           terraform init
           terraform apply -auto-approve
 
+      - name: Debug Terraform Outputs
+        run: |
+          cd terraform
+          echo "Raw public_ip output:"
+          terraform output -raw public_ip
+          echo "Raw key_name output:"
+          terraform output -raw key_name
+
       - name: Get Terraform Outputs
         id: outputs
         run: |
           cd terraform
-          PUBLIC_IP=$(terraform output -raw public_ip)
+          PUBLIC_IP=$(terraform output -raw public_ip | tr -d '\n')
           echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
-          KEY_NAME=$(terraform output -raw key_name)
+          KEY_NAME=$(terraform output -raw key_name | tr -d '\n')
           echo "KEY_NAME=$KEY_NAME" >> $GITHUB_ENV
+        shell: /usr/bin/bash -e {0}
 
       - name: Use Terraform Output in GitHub Actions
-        run: echo "The instance IP is ${{ env.PUBLIC_IP }}"
+        run: |
+          echo "The instance IP is ${{ env.PUBLIC_IP }}"
+          echo "The key name is ${{ env.KEY_NAME }}"
 
       - name: Setup Ansible
         run: |
