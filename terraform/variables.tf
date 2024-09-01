@@ -6,7 +6,7 @@ variable "aws_region" {
 
 variable "ami_id" {
   description = "The AMI ID to use for the EC2 instance"
-  default     = "ami-0f74c08b8b5effa56"  # Amazon Linux 2 AMI for ap-southeast-1
+  default     = "ami-01811d4912b4ccb26"  # Ubuntu Server 24.04 LTS (HVM),EBS General Purpose (SSD) Volume Type. Support available from Canonical
 }
 
 variable "instance_type" {
