@@ -22,4 +22,5 @@ variable "key_name" {
 variable "project_name" {
   type        = string
   description = "django-ansible-tf-demo"
+  default     = "django-ansible-tf-demo"
 }
