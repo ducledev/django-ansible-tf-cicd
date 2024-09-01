@@ -29,9 +29,9 @@ jobs:
       - name: Debug Terraform Outputs
         run: |
           cd terraform
-          echo "Raw public_ip output:"
+          echo "\nRaw public_ip output:"
           terraform-bin output -raw public_ip
-          echo "Raw key_name output:"
+          echo "\nRaw key_name output:"
           terraform-bin output -raw key_name
 
       - name: Get Terraform Outputs
@@ -42,7 +42,6 @@ jobs:
           echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
           KEY_NAME=$(terraform-bin output -raw key_name)
           echo "KEY_NAME=$KEY_NAME" >> $GITHUB_ENV
-        # shell: /usr/bin/bash -e {0}
 
       - name: Use Terraform Output in GitHub Actions
         run: |
