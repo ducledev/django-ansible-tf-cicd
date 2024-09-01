@@ -21,7 +21,6 @@ jobs:
         uses: hashicorp/setup-terraform@v1
 
       - name: Terraform Init and Apply
-        id: terraform
         run: |
           cd terraform
           terraform init
@@ -30,12 +29,11 @@ jobs:
       - name: Get Terraform Outputs
         id: outputs
         run: |
+          cd terraform
           PUBLIC_IP=$(terraform output -raw public_ip)
-          KEY_NAME=$(terraform output -raw key_name)
           echo $PUBLIC_IP
-          echo $KEY_NAME
-          echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
-          echo "KEY_NAME=$KEY_NAME" >> $GITHUB_ENV
+          echo "PUBLIC_IP=$(terraform output -raw public_ip)" >> $GITHUB_ENV
+          echo "KEY_NAME=$(terraform output -raw key_name)" >> $GITHUB_ENV
 
       - name: Use Terraform Output in GitHub Actions
         run: echo "The instance IP is ${{ env.PUBLIC_IP }}"
