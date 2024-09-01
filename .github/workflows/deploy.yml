@@ -30,17 +30,17 @@ jobs:
         run: |
           cd terraform
           echo "Raw public_ip output:"
-          terraform output -raw public_ip
+          terraform-bin output -raw public_ip
           echo "Raw key_name output:"
-          terraform output -raw key_name
+          terraform-bin output -raw key_name
 
       - name: Get Terraform Outputs
         id: outputs
         run: |
           cd terraform
-          PUBLIC_IP=$(terraform output -raw public_ip | tr -d '\n')
+          PUBLIC_IP=$(terraform-bin output -raw public_ip)
           echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
-          KEY_NAME=$(terraform output -raw key_name | tr -d '\n')
+          KEY_NAME=$(terraform-bin output -raw key_name)
           echo "KEY_NAME=$KEY_NAME" >> $GITHUB_ENV
         # shell: /usr/bin/bash -e {0}
 
