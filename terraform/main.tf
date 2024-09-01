@@ -2,20 +2,7 @@ provider "aws" {
   region = var.aws_region
 }
 
-data "aws_instances" "existing_django_server" {
-  filter {
-    name   = "tag:Project"
-    values = [var.project_name]
-  }
-
-  filter {
-    name   = "instance-state-name"
-    values = ["running", "stopped"]
-  }
-}
-
 resource "aws_instance" "django_server" {
-  count         = length(data.aws_instances.existing_django_server.ids) == 0 ? 1 : 0
   ami           = var.ami_id
   instance_type = var.instance_type
   key_name      = aws_key_pair.deployer.key_name
