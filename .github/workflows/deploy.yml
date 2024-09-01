@@ -42,7 +42,7 @@ jobs:
           echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
           KEY_NAME=$(terraform output -raw key_name | tr -d '\n')
           echo "KEY_NAME=$KEY_NAME" >> $GITHUB_ENV
-        shell: /usr/bin/bash -e {0}
+        # shell: /usr/bin/bash -e {0}
 
       - name: Use Terraform Output in GitHub Actions
         run: |
