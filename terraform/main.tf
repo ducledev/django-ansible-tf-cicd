@@ -65,7 +65,7 @@ resource "local_file" "private_key" {
 
 // Reference the S3 bucket setup module
 module "s3_bucket_setup" {
-  source = "./s3_bucket_setup"
+  source = "../s3_bucket_setup"
   // Add any necessary variables here
 }
 
