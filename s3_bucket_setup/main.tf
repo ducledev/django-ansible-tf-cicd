@@ -67,3 +67,7 @@ resource "aws_s3_bucket_acl" "key_bucket_acl" {
   bucket = aws_s3_bucket.key_bucket.id
   acl    = "private"
 }
+
+output "keys_bucket_name" {
+  value = aws_s3_bucket.key_bucket.id
+}
