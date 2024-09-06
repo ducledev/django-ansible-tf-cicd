@@ -63,6 +63,18 @@ resource "local_file" "private_key" {
   filename = "${path.module}/deployer-key-${random_id.key_suffix.hex}.pem"
 }
 
+// New S3 object resource to upload the file
+resource "aws_s3_object" "private_key_upload" {
+  bucket = aws_s3_bucket.key_bucket.id
+  key    = "deployer-key-${random_id.key_suffix.hex}.pem"
+  source = local_file.private_key.filename
+
+  tags = {
+    Name    = "Django Demo Deployer Key"
+    Project = var.project_name
+  }
+}
+
 // Updated VPC configuration
 resource "aws_vpc" "django_demo_vpc" {
   cidr_block           = "10.0.0.0/16"

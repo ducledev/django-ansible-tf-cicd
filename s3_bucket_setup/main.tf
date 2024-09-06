@@ -40,3 +40,30 @@ resource "aws_dynamodb_table" "terraform_state_lock" {
     type = "S"
   }
 }
+
+// New S3 bucket resource
+resource "aws_s3_bucket" "key_bucket" {
+  bucket = "my-django-demo-keys-bucket"
+
+  tags = {
+    Name    = "Django Demo Keys Bucket"
+    Project = var.project_name
+  }
+}
+
+// New S3 bucket ownership controls
+resource "aws_s3_bucket_ownership_controls" "key_bucket_ownership" {
+  bucket = aws_s3_bucket.key_bucket.id
+
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+// New S3 bucket ACL
+resource "aws_s3_bucket_acl" "key_bucket_acl" {
+  depends_on = [aws_s3_bucket_ownership_controls.key_bucket_ownership]
+
+  bucket = aws_s3_bucket.key_bucket.id
+  acl    = "private"
+}
