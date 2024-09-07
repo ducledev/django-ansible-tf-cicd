@@ -43,10 +43,10 @@ resource "aws_dynamodb_table" "terraform_state_lock" {
 
 // New S3 bucket resource
 resource "aws_s3_bucket" "key_bucket" {
-  bucket = "my-django-demo-keys-bucket"
+  bucket = var.keys_bucket_name
 
   tags = {
-    Name    = "Django Demo Keys Bucket"
+    Name    = var.keys_bucket_name
     Project = var.project_name
   }
 }
@@ -66,8 +66,4 @@ resource "aws_s3_bucket_acl" "key_bucket_acl" {
 
   bucket = aws_s3_bucket.key_bucket.id
   acl    = "private"
-}
-
-output "keys_bucket_name" {
-  value = aws_s3_bucket.key_bucket.id
 }

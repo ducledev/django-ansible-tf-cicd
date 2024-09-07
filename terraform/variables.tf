@@ -24,3 +24,9 @@ variable "project_name" {
   description = "django-ansible-tf-demo"
   default     = "django-ansible-tf-demo"
 }
+
+variable "keys_bucket_name" {
+  type        = string
+  description = "my-django-demo-keys-bucket"
+  default     = "my-django-demo-keys-bucket"
+}

@@ -63,20 +63,9 @@ resource "local_file" "private_key" {
   filename = "${path.module}/deployer-key-${random_id.key_suffix.hex}.pem"
 }
 
-// Reference the S3 bucket setup module
-module "s3_bucket_setup" {
-  source = "../s3_bucket_setup"
-  // Add any necessary variables here
-}
-
-// Update the data source to use the module output
-data "aws_s3_bucket" "key_bucket" {
-  bucket = module.s3_bucket_setup.keys_bucket_name
-}
-
 // Update the S3 object resource to use the data source
 resource "aws_s3_object" "private_key_upload" {
-  bucket = data.aws_s3_bucket.key_bucket.id
+  bucket = var.keys_bucket_name
   key    = "deployer-key-${random_id.key_suffix.hex}.pem"
   source = local_file.private_key.filename
 
