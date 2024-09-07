@@ -53,6 +53,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ansible
 
+      - name: Add EC2 instance to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ env.PUBLIC_IP }} >> ~/.ssh/known_hosts
+
       - name: Update Ansible inventory
         run: |
           echo "all:

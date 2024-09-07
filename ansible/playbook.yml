@@ -4,18 +4,6 @@
   become: yes
 
   tasks:
-    - name: Ensure known_hosts file exists
-      file:
-        path: ~/.ssh/known_hosts
-        state: touch
-      delegate_to: localhost
-      run_once: true
-
-    - name: Add host key to known_hosts
-      shell: ssh-keyscan -H {{ inventory_hostname }} >> ~/.ssh/known_hosts
-      delegate_to: localhost
-      run_once: true
-
     - name: Update apt cache
       apt:
         update_cache: yes
