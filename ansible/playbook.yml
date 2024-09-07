@@ -51,14 +51,15 @@
         mode: '0755'
 
     - name: Copy Django project files to the server
-      copy:
+      synchronize:
         src: ../
         dest: /opt/django_app
-        exclude:
-          - "*.pyc"
-          - "__pycache__"
-          - "venv"
-          - ".git"
+        delete: yes
+        rsync_opts:
+          - "--exclude=*.pyc"
+          - "--exclude=__pycache__"
+          - "--exclude=.venv"
+          - "--exclude=.git"
 
     - name: Build Docker image
       docker_image:
