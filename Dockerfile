@@ -8,6 +8,12 @@ RUN pip install --upgrade pip && pip install pipenv
 # Copy Pipfile and Pipfile.lock
 COPY Pipfile Pipfile.lock /app/
 
+# Debug: List contents of /app
+RUN ls -la /app
+
+# Debug: Cat contents of Pipfile
+RUN cat /app/Pipfile
+
 # Install dependencies using pipenv
 RUN pipenv install --system --deploy --ignore-pipfile
 
