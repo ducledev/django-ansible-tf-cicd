@@ -1,5 +1,5 @@
 ---
-- name: Deploy Django application
+- name: Deploy Django application with Nginx
   hosts: django_server
   become: yes
 
@@ -77,6 +77,30 @@
         source: build
         force_source: yes
 
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Remove default Nginx site
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: Create Nginx configuration for Django app
+      template:
+        src: templates/nginx_django.conf.j2
+        dest: /etc/nginx/sites-available/django_app
+      notify: Reload Nginx
+
+    - name: Enable Nginx site for Django app
+      file:
+        src: /etc/nginx/sites-available/django_app
+        dest: /etc/nginx/sites-enabled/django_app
+        state: link
+      notify: Reload Nginx
+
     - name: Run Django Docker container
       docker_container:
         name: django_app
@@ -84,4 +108,10 @@
         state: started
         restart_policy: always
         published_ports:
-          - "80:8000"
+          - "8000:8000"
+
+  handlers:
+    - name: Reload Nginx
+      service:
+        name: nginx
+        state: reloaded
