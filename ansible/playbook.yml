@@ -44,6 +44,13 @@
         state: started
         enabled: yes
 
+    - name: Copy SSH key to a specific location (if needed)
+      copy:
+        src: "{{ ansible_ssh_private_key_file }}"
+        dest: "~/.ssh/private_key.pem"
+        mode: '0600'
+      when: ansible_ssh_private_key_file is defined
+
     - name: Create a directory for the Django app
       file:
         path: /opt/django_app
