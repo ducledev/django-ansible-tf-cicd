@@ -1,0 +1,59 @@
+# Version control
+.git
+.gitignore
+
+# Python cache files
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+.venv
+venv
+
+# Development and IDE files
+.vscode
+.idea
+*.swp
+*.swo
+
+# Terraform files
+terraform/
+*.tf
+*.tfstate
+*.tfvars
+
+# Ansible files
+ansible/
+
+# GitHub Actions
+.github/
+
+# Docker files
+Dockerfile
+Dockerfile.debug
+.dockerignore
+
+# Test files
+tests/
+*.test.py
+
+# Documentation
+README.md
+*.md
+
+# Log files
+*.log
+
+# Local environment files
+.env
+.env.local
+
+# Temporary files
+*.tmp
+*.bak
+
+# OS generated files
+.DS_Store
+Thumbs.db

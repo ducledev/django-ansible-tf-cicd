@@ -1,9 +1,9 @@
 FROM python:3.12
 
 # Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-ENV DJANGO_SETTINGS_MODULE django-demo.settings
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV DJANGO_SETTINGS_MODULE=django_demo.settings
 
 WORKDIR /app
 
@@ -27,6 +27,8 @@ RUN python -c "import sys; print(sys.path)"
 
 # Debug: Try to import Django
 RUN python -c "import django; print(django.__file__)"
+
+RUN mkdir -p /app/staticfiles
 
 # Run collectstatic with verbose output
 RUN python manage.py collectstatic --noinput -v 2
