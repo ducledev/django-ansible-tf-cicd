@@ -3,6 +3,7 @@ FROM python:3.12
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+ENV DJANGO_SETTINGS_MODULE django-demo.settings
 
 WORKDIR /app
 
@@ -12,19 +13,23 @@ RUN pip install --upgrade pip && pip install pipenv
 # Copy Pipfile and Pipfile.lock
 COPY Pipfile Pipfile.lock /app/
 
-# Debug: List contents of /app
-RUN ls -la /app
-
-# Debug: Cat contents of Pipfile
-RUN cat /app/Pipfile
-
 # Install dependencies using pipenv
 RUN pipenv install --system --deploy --ignore-pipfile
 
 # Copy project
 COPY . /app/
 
-RUN pipenv run python manage.py collectstatic --noinput
+# Debug: List contents of /app
+RUN ls -la /app
+
+# Debug: Print Python path
+RUN python -c "import sys; print(sys.path)"
+
+# Debug: Try to import Django
+RUN python -c "import django; print(django.__file__)"
+
+# Run collectstatic with verbose output
+RUN python manage.py collectstatic --noinput -v 2
 
 EXPOSE 8000
 
