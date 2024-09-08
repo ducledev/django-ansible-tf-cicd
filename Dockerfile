@@ -35,4 +35,4 @@ RUN python manage.py collectstatic --noinput -v 2
 
 EXPOSE 8000
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "django-demo.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "django_demo.wsgi:application"]
