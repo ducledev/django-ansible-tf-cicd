@@ -3,15 +3,16 @@ FROM python:3.12
 WORKDIR /app
 
 # Install pipenv
-RUN pip install pipenv
+RUN pip install --upgrade pip && pip install pipenv
 
 # Copy Pipfile and Pipfile.lock
-COPY Pipfile Pipfile.lock ./
+COPY Pipfile Pipfile.lock /app/
 
 # Install dependencies using pipenv
-RUN pipenv install --system --deploy
+RUN pipenv install --system --deploy --ignore-pipfile
 
-COPY . .
+# Copy project
+COPY . /app/
 
 RUN python manage.py collectstatic --noinput
 

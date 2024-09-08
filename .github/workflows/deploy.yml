@@ -32,14 +32,6 @@ jobs:
           terraform init
           terraform apply -auto-approve
 
-      - name: Debug Terraform Outputs
-        run: |
-          cd terraform
-          echo "\nRaw public_ip output:"
-          terraform-bin output -raw public_ip
-          echo "\nRaw key_name output:"
-          terraform-bin output -raw key_name
-
       - name: Get Terraform Outputs
         id: outputs
         run: |
