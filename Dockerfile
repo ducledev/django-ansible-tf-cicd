@@ -1,5 +1,9 @@
 FROM python:3.12
 
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
 WORKDIR /app
 
 # Install pipenv
@@ -20,7 +24,7 @@ RUN pipenv install --system --deploy --ignore-pipfile
 # Copy project
 COPY . /app/
 
-RUN python manage.py collectstatic --noinput
+RUN pipenv run python manage.py collectstatic --noinput
 
 EXPOSE 8000
 
