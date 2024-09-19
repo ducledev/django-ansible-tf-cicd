@@ -14,17 +14,17 @@ RUN pip install --upgrade pip && pip install pipenv
 # Copy Pipfile and Pipfile.lock
 COPY Pipfile Pipfile.lock /app/
 
+ENV PIPENV_VENV_IN_PROJECT=1
 # Install dependencies using pipenv
-RUN pipenv install --system --deploy --ignore-pipfile
-
-# Install debugpy
-RUN pipenv run pip install debugpy
+RUN pipenv install --dev
 
 # Copy project
-COPY . /app/
+COPY . .
 
-# Expose port 8000 for the Django app and 5678 for debugpy
+ENV PATH="/app/.venv/bin:${PATH}"
+ENV PYTHONPATH /app
+
+# CMD ["pipenv", "run", "python", "-m", "debugpy", "--wait-for-client", "--listen", "0.0.0.0:5678", "manage.py", "runserver", "0.0.0.0:8000"]
+
+CMD ["sh", "docker-entrypoint.debug.sh"]
 EXPOSE 8000 5678
-
-# Run the command to start uWSGI
-CMD ["pipenv", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]
